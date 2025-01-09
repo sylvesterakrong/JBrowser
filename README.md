@@ -1,50 +1,25 @@
-# Welcome to your Expo app 👋
+#React Native Browser App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is a simple React Native web browser application with a Pinterest-like feel and a soft Japanese-inspired design. It includes basic navigation functionality with back and forward buttons and a bottom navigation bar. This app was created as a practice project to explore React Native features and styling.
 
-## Get started
+##Features
 
-1. Install dependencies
+-Webview for Browsing: Enter a URL to load and browse websites.
 
-   ```bash
-   npm install
-   ```
+-Back and Forward Navigation: Navigate between previously visited pages.
 
-2. Start the app
+-Custom Design: A soft and minimalistic UI inspired by Japanese aesthetics and Swiss design principles.
 
-   ```bash
-    npx expo start
-   ```
+-Responsive Input: Enter URLs and load them on pressing enter or the 'Go' button.
 
-In the output, you'll find options to open the app in a
+-Bottom Navigation Bar: Placeholder buttons for future features like Home, Settings, etc.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+##Contributing
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+This is a practice project, but contributions are welcome. Feel free to fork the repository and make pull requests for any improvements or new features.
 
-## Get a fresh project
+##Issues
 
-When you're ready, run:
+If you encounter any issues, feel free to open an issue on the repository or reach out to me directly.
 
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Happy coding! 🚀
