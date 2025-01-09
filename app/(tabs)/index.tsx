@@ -1,74 +1,157 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import React, { useState, useRef } from "react";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, RefreshControl  } from "react-native";
+import { WebView } from "react-native-webview";
 
 export default function HomeScreen() {
+  const [url, setUrl] = useState("https://www.google.com");
+  const [refreshing, setRefreshing] = useState(false);
+  const [inputUrl, setInputUrl] = useState("");
+  const webViewRef = useRef<WebView>(null);
+
+  const loadUrl = () => {
+    if (!inputUrl.trim()) return;
+
+    // Check if it's a valid URL
+    const isUrl = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(inputUrl.trim());
+
+    if (isUrl) {
+      // Handle URL
+      const formattedUrl = inputUrl.trim().toLowerCase();
+      const fullUrl = formattedUrl.startsWith('http') ? formattedUrl : `https://${formattedUrl}`;
+      setUrl(fullUrl);
+    } else {
+      // Handle search query
+      const searchQuery = encodeURIComponent(inputUrl.trim());
+      setUrl(`https://www.google.com/search?q=${searchQuery}`);
+    }
+
+    setInputUrl(""); // Clear input after loading
+  };
+
+  const goBack = () => {
+    webViewRef.current?.goBack();
+  };
+
+  const goForward = () => {
+    webViewRef.current?.goForward();
+  };
+
+  const goHome = () => {
+    setUrl("https://www.google.com");
+    setInputUrl("");
+  };
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    if (webViewRef.current) {
+      webViewRef.current.reload();
+    }
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  };
+
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <View style={styles.container}>
+      <View style={styles.topBar}>
+        <TextInput
+          style={styles.input}
+          placeholder="Search or enter website"
+          placeholderTextColor="#A8B5C3"
+          value={inputUrl}
+          onChangeText={setInputUrl}
+          onSubmitEditing={loadUrl}
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="url"
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <TouchableOpacity style={styles.goButton} onPress={loadUrl}>
+          <Text style={styles.goText}>Go</Text>
+        </TouchableOpacity>
+      </View>
+        <WebView
+          ref={webViewRef}
+          source={{ uri: url }}
+          style={styles.webview}
+          onError={(syntheticEvent) => {
+            const { nativeEvent } = syntheticEvent;
+            console.error('WebView error:', nativeEvent);
+          }}
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+          startInLoadingState={true}
+          allowsFullscreenVideo={true}
+          allowsInlineMediaPlayback={true}
+          injectedJavaScript={`
+            document.body.style.backgroundColor = '#F9F9F9';
+            true;
+          `}
+        />
+      <View style={styles.navBar}>
+        <TouchableOpacity style={styles.navButton} onPress={goBack}>
+          <Text style={styles.icon}>◀</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton} onPress={goForward}>
+          <Text style={styles.icon}>▶</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton} onPress={goHome}>
+          <Text style={styles.icon}>⾕</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    backgroundColor: "#F9F9F9", // Soft beige background
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  topBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E0E0E0",
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  input: {
+    flex: 1,
+    height: 40,
+    backgroundColor: "#F9F9F9",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    color: "#333",
+    borderColor: "#D3D3D3",
+    borderWidth: 1,
+  },
+  goButton: {
+    marginLeft: 10,
+    padding: 10,
+    backgroundColor: "#A8B5C3",
+    borderRadius: 8,
+  },
+  goText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+  },
+  webview: {
+    flex: 1,
+  },
+  navBar: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10,
+    backgroundColor: "#FFFFFF",
+    borderTopWidth: 1,
+    borderTopColor: "#E0E0E0",
+  },
+  navButton: {
+    padding: 10,
+  },
+  icon: {
+    fontSize: 20,
+    color: "#A8B5C3", // Muted teal
   },
 });
